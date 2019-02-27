@@ -18,7 +18,7 @@ public class Main {
     public static void main(String args[]) throws IOException {
         // creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and coreference resolution
         Properties props = new Properties();
-        props.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref");
+        props.setProperty("annotators", "tokenize, ssplit, pos, lemma");
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
 
         //Reading a file
@@ -28,12 +28,12 @@ public class Main {
 
         //intialiaxiotn
         List<String> keywordList = new ArrayList<>();
-        List<String> baseballImageList = new ArrayList<>();
-        List<String> footballImageList = new ArrayList<>();
-        List<String> basketballImageList = new ArrayList<>();
-        keywordList.add("baseball");
-        keywordList.add("basketball");
-        keywordList.add("football");
+        List<String> cricketImageList = new ArrayList<>();
+        List<String> soccerImageList = new ArrayList<>();
+        List<String> hockeyImageList = new ArrayList<>();
+        keywordList.add("cricket");
+        keywordList.add("soccer");
+        keywordList.add("hockey");
 
 
         //intializing map with 0's
@@ -75,33 +75,33 @@ public class Main {
 
                     if (keywordmap.containsKey(lemma)) {
 
-                        if(lemma.equals("baseball")){
+                        if(lemma.equals("cricket")){
 
                             Pattern pattern = Pattern.compile("[0-9]*.jpg");
                             Matcher matcher = pattern.matcher(caption);
                             if (matcher.find()){
-                                baseballImageList.add(matcher.group(0));
-                                Path temp = Files.copy(Paths.get("src/Data/flickr30k_images/" + matcher.group(0)), Paths.get("src/Data/baseball/" + matcher.group(0)), REPLACE_EXISTING);
+                                cricketImageList.add(matcher.group(0));
+                                Path temp = Files.copy(Paths.get("src/Data/flickr30k_images/" + matcher.group(0)), Paths.get("src/Data/cricket/" + matcher.group(0)), REPLACE_EXISTING);
                             }
                         }
-                        if(lemma.equals("football")){
+                        if(lemma.equals("soccer")){
 
                             Pattern pattern = Pattern.compile("[0-9]*.jpg");
                             Matcher matcher = pattern.matcher(caption);
                             if (matcher.find()){
-                                footballImageList.add(matcher.group(0));
-                                Path temp = Files.copy(Paths.get("src/Data/flickr30k_images/" + matcher.group(0)), Paths.get("src/Data/football/" + matcher.group(0)), REPLACE_EXISTING);
+                                soccerImageList.add(matcher.group(0));
+                                Path temp = Files.copy(Paths.get("src/Data/flickr30k_images/" + matcher.group(0)), Paths.get("src/Data/soccer/" + matcher.group(0)), REPLACE_EXISTING);
 
 
                             }
                         }
-                        if(lemma.equals("basketball")){
+                        if(lemma.equals("hockey")){
 
                             Pattern pattern = Pattern.compile("[0-9]*.jpg");
                             Matcher matcher = pattern.matcher(caption);
                             if (matcher.find()){
-                                basketballImageList.add(matcher.group(0));
-                                Path temp = Files.copy(Paths.get("src/Data/flickr30k_images/" + matcher.group(0)), Paths.get("src/Data/basketball/" + matcher.group(0)), REPLACE_EXISTING);
+                                hockeyImageList.add(matcher.group(0));
+                                Path temp = Files.copy(Paths.get("src/Data/flickr30k_images/" + matcher.group(0)), Paths.get("src/Data/hockey/" + matcher.group(0)), REPLACE_EXISTING);
 
                             }
                         }
@@ -116,8 +116,8 @@ public class Main {
         }
         System.out.println("Image Statistics: ");
         System.out.println(keywordmap);
-        System.out.println(baseballImageList);
-        System.out.println(footballImageList);
-        System.out.println(basketballImageList);
+        System.out.println(cricketImageList);
+        System.out.println(soccerImageList);
+        System.out.println(hockeyImageList);
     }
 }
