@@ -6,6 +6,8 @@ import logging
 import math
 import os
 import tensorflow as tf
+import re
+from difflib import SequenceMatcher
 
 from medium_show_and_tell_caption_generator.caption_generator import CaptionGenerator
 from medium_show_and_tell_caption_generator.model import ShowAndTellModel
@@ -20,7 +22,6 @@ image_list = ""
 for filename in glob.glob("C:\\Users\\Siri\\Downloads\\medium-show-and-tell-caption-generator-master\\medium-show-and-tell-caption-generator-master\\imgs\\football\\*.jpg"):
     image_list += filename + ","
 
-print(image_list)
 tf.flags.DEFINE_string("input_files", image_list,
                        "File pattern or comma-separated list of file patterns "
                        "of image files.")
@@ -29,6 +30,8 @@ logging.basicConfig(level=logging.INFO)
 
 logger = logging.getLogger(__name__)
 
+def similar(a, b):
+    return SequenceMatcher(None, a, b).ratio()
 
 def main(_):
     model = ShowAndTellModel(FLAGS.model_path)
@@ -48,10 +51,18 @@ def main(_):
                 # Ignore begin and end tokens <S> and </S>.
                 sentence = [vocab.id_to_token(w) for w in caption.sentence[1:-1]]
 
-                sentence = " ".join(sentence)
-                print("  %d) %s (p=%f)" % (i, sentence, math.exp(caption.logprob)))
+                # For calculating accuracy
+                with open('caption.txt', 'r', encoding="utf8") as file:
+                    pattern = os.path.basename(filename) + '#' + str(i)
+                    for item in file:
+                        match = re.search(pattern, item)
+                        if(match):
+                            actual = item.split('\t')[1]
+                            accuracy = similar(actual, sentence)
 
-                f.write("  %d) %s (p=%f)" % (i, sentence, math.exp(caption.logprob)) + "\n")
+                sentence = " ".join(sentence)
+                print("  %d) %s (p=%f)" % (i, sentence, math.exp(caption.logprob)) + " - Accuracy: " + str(accuracy))
+                f.write("  %d) %s (p=%f)" % (i, sentence, math.exp(caption.logprob)) +"- Accuracy: "+ str(accuracy) + "\n")
 
 
 def _load_filenames():
